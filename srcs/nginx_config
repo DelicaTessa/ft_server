@@ -2,12 +2,13 @@ server {
     listen 80;
     listen [::]:80;
 
-    root /var/www/localhost;
+    root /var/www/html;
     index index.php index.html index.htm;
 
-    server_name localhost;
+    server_name ft_server;
 
     location / {
+        autoindex on;
         try_files $uri $uri/ =404;
     }
 
