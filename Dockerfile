@@ -64,9 +64,9 @@ RUN chown -R www-data:www-data /var/www/
 
 # starting services
 CMD service nginx start \
-&& service mysql start \
-&& service php7.3-fpm start \
-&& tail -f /dev/null
+    && service mysql start \
+    && service php7.3-fpm start \
+    && tail -f /dev/null
 
 
 # build and run:
