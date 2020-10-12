@@ -15,12 +15,13 @@ RUN apt update \
     && apt -y install php-fpm php-mysql \
     && apt install openssl \
     && apt -y install wget \
-    && apt -y install php-mbstring lsb-release gnupg
+    && apt -y install php-mbstring lsb-release gnupg \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # setting up Nginx
-RUN mkdir /var/www/ft_server \
-    && cp srcs/nginx_config /etc/nginx/sites-available/default \
-    && rm /var/www/html/index.nginx-debian.html
+RUN cp srcs/nginx_config /etc/nginx/sites-available/default \
+    && rm /var/www/html/index.nginx-debian.html 
 
 # SSL
 RUN cd /etc/ssl/certs/ \
@@ -30,10 +31,10 @@ RUN cd /etc/ssl/certs/ \
     && chmod 775 /etc/ssl/certs/ft_server.crt
 
 # PHPMyAdmin
-RUN wget https://files.phpmyadmin.net/phpMyAdmin/4.9.5/phpMyAdmin-4.9.5-all-languages.tar.gz \
-    && tar -xzvf phpMyAdmin-4.9.5-all-languages.tar.gz -C /var/www/html \
-    && mv /var/www/html/phpMyAdmin-4.9.5-all-languages /var/www/html/phpmyadmin \
-    && rm phpMyAdmin-4.9.5-all-languages.tar.gz \
+RUN wget https://files.phpmyadmin.net/phpMyAdmin/4.9.6/phpMyAdmin-4.9.6-all-languages.tar.gz \
+    && tar -xzvf phpMyAdmin-4.9.6-all-languages.tar.gz -C /var/www/html \
+    && mv /var/www/html/phpMyAdmin-4.9.6-all-languages /var/www/html/phpmyadmin \
+    && rm phpMyAdmin-4.9.6-all-languages.tar.gz \
     && cp srcs/config.inc.php /var/www/html/phpmyadmin \
     && mkdir /var/www/html/phpmyadmin/tmp \
     && chmod 777 /var/www/html/phpmyadmin/tmp \
@@ -63,15 +64,19 @@ RUN service mysql start \
 RUN chown -R www-data:www-data /var/www/ 
 
 # starting services
-CMD service nginx start \
-    && service mysql start \
-    && service php7.3-fpm start \
-    && tail -f /dev/null
+CMD bash ft_server.sh \
+    && nginx -g 'daemon off;' \
+    && bash
+   # && tail -f /dev/null
 
 
 # build and run:
 # docker build -t ft_server .
-# docker run -it -p 80:80 -p 443:443 ft_server
+# docker run --name ft_server -it  -p 80:80 -p 443:443 ft_server
+
+# change autoindex:
+# docker exec -it ft_server /bin/bash srcs/autoindex_on.sh
+# docker exec -it ft_server /bin/bash srcs/autoindex_off.sh
 
 # quit:
 # close container in Docker Desktop
