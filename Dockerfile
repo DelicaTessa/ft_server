@@ -64,10 +64,7 @@ RUN service mysql start \
 RUN chown -R www-data:www-data /var/www/ 
 
 # starting services
-CMD bash ft_server.sh \
-    && nginx -g 'daemon off;' \
-    && bash
-   # && tail -f /dev/null
+CMD bash srcs/ft_server.sh 
 
 
 # build and run:
@@ -89,4 +86,3 @@ CMD bash ft_server.sh \
 # making wp-config.php: https://developer.wordpress.org/cli/commands/config/create/
 # changing WP url: https://wpbeaches.com/updating-wordpress-mysql-database-after-moving-to-a-new-url/
 # MySQL fixing database: https://askubuntu.com/questions/261858/the-phpmyadmin-configuration-storage-is-not-completely-configured
-
