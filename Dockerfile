@@ -61,15 +61,18 @@ RUN service mysql start \
 	&& mysql -e "USE wordpress;UPDATE wp_options SET option_value='https://localhost/' WHERE option_name='siteurl' OR option_name='home';" 
 
 # give ownership to webroot
-RUN chown -R www-data:www-data /var/www/ 
+RUN chown -R www-data:www-data /var/www/html
 
 # starting services
-CMD bash srcs/ft_server.sh 
+CMD service php7.3-fpm start \
+    && service mysql start \
+    && service nginx start \
+    && tail -f /dev/null
 
 
 # build and run:
 # docker build -t ft_server .
-# docker run --name ft_server -it  -p 80:80 -p 443:443 ft_server
+# docker run --name ft_server -it -p 80:80 -p 443:443 ft_server
 
 # change autoindex:
 # docker exec -it ft_server /bin/bash srcs/autoindex_on.sh
